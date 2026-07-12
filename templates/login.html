@@ -1,0 +1,50 @@
+{% extends 'index.html' %}
+
+{% block title %}
+    {% if login_type == 'admin' %}Admin Login{% else %}User Login{% endif %}
+{% endblock %}
+
+{% block content %}
+<style>
+    .login-box { padding: 30px; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    /* Dynamic UI Theme based on login context */
+    .theme-admin { border-top: 5px solid #dc3545; }
+    .theme-user { border-top: 5px solid #007bff; }
+    
+    .form-control { width: 100%; padding: 10px; margin: 8px 0 15px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    .btn { width: 100%; padding: 12px; border: none; border-radius: 4px; color: white; font-size: 16px; cursor: pointer; }
+    .btn-admin { background-color: #dc3545; }
+    .btn-user { background-color: #007bff; }
+    .switch-link { display: block; text-align: center; margin-top: 15px; font-size: 14px; color: #666; text-decoration: none; }
+</style>
+
+<div class="login-box theme-{{ login_type }}">
+    <h2>{% if login_type == 'admin' %}Admin Dashboard Login{% else %}User Portal Login{% endif %}</h2>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color: #28a745; font-weight: bold; margin-bottom: 15px;">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if msg %}
+        <p style="color: #dc3545; font-weight: bold; margin-bottom: 15px;">{{ msg }}</p>
+    {% endif %}
+
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        
+        <button type="submit" class="btn btn-{{ login_type }}">
+            Log In as {% if login_type == 'admin' %}Admin{% else %}User{% endif %}
+        </button>
+    </form>
+
+    {% if login_type == 'admin' %}
+        <a class="switch-link" href="/user-login/">Not an Admin? Go to User Login →</a>
+    {% else %}
+        <a class="switch-link" href="/admin-login/">Are you an Admin? Go to Admin Login →</a>
+    {% endif %}
+
+</div> 
+{% endblock %}

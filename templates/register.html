@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="admin-form-container">
+    <div class="form-header">
+        <h2>Create User Account</h2>
+        <p>Please fill in your details below to join Book Bazar.</p>
+    </div>
+
+    <form method="POST" class="admin-form">
+        {% csrf_token %}
+        
+        <div class="form-fields">
+            {{ form.as_p }}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">Register Account</button>
+            <a href="/user-login/" class="btn-cancel">Already have an account? Login</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
