@@ -1,0 +1,35 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<h2>Admin Dashboard: Active Withdrawals</h2>
+<p>List of books currently checked out by students.</p>
+
+<table style="width:100%; border-collapse: collapse; margin-top: 20px; font-family: sans-serif;">
+    <thead>
+        <tr style="background-color: #f2f2f2; text-align: left; border-bottom: 2px solid #ddd;">
+            <th style="padding: 12px;">Student ID</th>
+            <th style="padding: 12px;">Student Name</th>
+            <th style="padding: 12px;">Branch</th>
+            <th style="padding: 12px;">Book Title</th>
+            <th style="padding: 12px;">Issue Date</th>
+            <th style="padding: 12px;">Return Period Deadline</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for issue in active_issues %}
+        <tr style="border-bottom: 1px solid #ddd;">
+            <td style="padding: 12px;">{{ issue.user.user_id }}</td>
+            <td style="padding: 12px;">{{ issue.user.user_name }}</td>
+            <td style="padding: 12px;">{{ issue.user.user_branch }}</td>
+            <td style="padding: 12px;">{{ issue.book.bname }}</td>
+            <td style="padding: 12px;">{{ issue.issue_date }}</td>
+            <td style="padding: 12px; color: #dc3545; font-weight: bold;">{{ issue.return_date }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" style="padding: 12px; text-align: center; color: #777;">No books are currently withdrawn.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

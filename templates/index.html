@@ -6,10 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>Book Library</title>
+    <style>
+    .stock-available {
+        color: #28a745;
+        font-weight: bold;
+        font-size: 0.85rem;
+        margin-bottom: 15px;
+    }
+    .stock-empty {
+        color: #dc3545;
+        font-weight: bold;
+        font-size: 0.85rem;
+        margin-bottom: 15px;
+    }
+    </style>
 </head>
 <body>
     <div class="page-wrapper">
-    
         <div class="main-container">
       
             <nav class="nav-bar">
@@ -19,6 +32,7 @@
                     
                     {% if user_role == 'admin' %}
                         <li><a href="/createbook/">Add Book</a></li>
+                        <li><a href="/admin-dashboard/">Withdrawals Log</a></li>
                     {% endif %}
                     
                     {% if not user_role %}
@@ -33,14 +47,23 @@
             </nav>
 
             <main class="content-body">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div style="padding: 10px; margin-bottom: 20px; border-radius: 5px; font-weight: bold;
+                                    background: {% if message.tags == 'success' %}#d4edda{% else %}#f8d7da{% endif %}; 
+                                    color: {% if message.tags == 'success' %}#155724{% else %}#721c24{% endif %};">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
                 {% if msg %}
-                    <div style="padding: 10px; background: #d4edda; color: #155724; border-radius: 5px; margin-bottom: 20px;">
+                    <div style="padding: 10px; background: #f8d7da; color: #721c24; border-radius: 5px; margin-bottom: 20px; font-weight: bold;">
                         {{ msg }}
                     </div>
                 {% endif %}
 
                 {% block content %}
-                <!-- --- BOOK STOREFRONT GRID --- -->
                 <h2>Available Books</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 20px;">
                     {% for book in books %}
@@ -48,10 +71,14 @@
                             {% if book.author_image %}
                                 <img src="{{ book.author_image.url }}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 4px; margin-bottom: 10px;">
                             {% endif %}
-                            <h3 style="font-size: 1.2rem; margin-bottom: 5px;">{{ book.bname }}</h3>
-                            <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">By: {{ book.author }}</p>
                             
-                            <!-- Only show the Withdraw button if a regular User is logged in -->
+                            <h3 style="font-size: 1.2rem; margin-bottom: 5px;">{{ book.bname }}</h3>
+                            <p style="color: #666; font-size: 0.9rem; margin-bottom: 5px;">By: {{ book.author }}</p>
+                            
+                            <p class="{% if book.available_copies > 0 %}stock-available{% else %}stock-empty{% endif %}">
+                                Available Copies: {{ book.available_copies }}
+                            </p>
+                            
                             {% if user_role == 'user' %}
                                 <a href="/withdraw/{{ book.bookid }}/" style="display: block; background: #007bff; color: white; padding: 8px; text-decoration: none; border-radius: 4px; font-weight: bold;">Withdraw Book</a>
                             {% elif user_role == 'admin' %}
@@ -64,9 +91,39 @@
                         <p>No books added to the bazaar yet.</p>
                     {% endfor %}
                 </div>
+
+                {% if user_role == 'admin' %}
+                    <hr style="margin: 40px 0; border: 1px solid #ccc;">
+                    <h2 style="color: #dc3545; margin-bottom: 15px;">Admin Panel: Live Withdrawal Logs (Homepage Summary)</h2>
+                
+                    <table style="width:100%; border-collapse: collapse; background: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        <tr style="background: #333; color: white; text-align: left;">
+                            <th style="padding: 12px; border: 1px solid #ddd;">Student ID</th>
+                            <th style="padding: 12px; border: 1px solid #ddd;">Student Name</th>
+                            <th style="padding: 12px; border: 1px solid #ddd;">Branch</th>
+                            <th style="padding: 12px; border: 1px solid #ddd;">Book Name</th>
+                            <th style="padding: 12px; border: 1px solid #ddd;">Issue Date</th>
+                            <th style="padding: 12px; border: 1px solid #ddd;">Return Deadline</th>
+                        </tr>
+
+                        {% for issue in active_withdrawals %}
+                            <tr style="border-bottom: 1px solid #ddd;">
+                                <td style="padding: 12px; border: 1px solid #ddd;">{{ issue.user.user_id }}</td>
+                                <td style="padding: 12px; border: 1px solid #ddd;">{{ issue.user.user_name }}</td>
+                                <td style="padding: 12px; border: 1px solid #ddd;">{{ issue.user.user_branch }}</td>
+                                <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">{{ issue.book.bname }}</td>
+                                <td style="padding: 12px; border: 1px solid #ddd;">{{ issue.issue_date }}</td>
+                                <td style="padding: 12px; border: 1px solid #ddd; color: #dc3545; font-weight: bold;">{{ issue.return_date }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" style="padding: 20px; text-align: center; color: #666;">No books are currently withdrawn by any students.</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
                 {% endblock %}
             </main>
-        
         </div>
     </div>
 </body>
