@@ -5,7 +5,7 @@ from app.models import AdminModel, UserModel, Book, IssuedBook
 from datetime import datetime, timedelta
 from django.contrib import messages
 
-# 1. Home Page / Book List View
+# 1. Home Page / Book List Viewww
 def first_page(request):
     books = Book.objects.all()
     user_role = request.session.get('user_role', None) 
