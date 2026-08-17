@@ -7,7 +7,7 @@ class Book(models.Model):
     author=models.CharField(max_length=25)
     author_image=models.ImageField(upload_to='images/')
     book_file=models.FileField(upload_to='documents/')
-    available_copies = models.IntegerField(default=1)
+    available_copies = models.IntegerField(default=10)
 
 class AdminModel(models.Model):
     admin_username = models.CharField(max_length=50, unique=True)
