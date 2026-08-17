@@ -136,3 +136,31 @@ def user_register_view(request):
 def logout_view(request):
     request.session.flush()  
     return redirect('/')
+
+# 9. Process Book Return (Admin Only)
+def return_book(request, issue_id):
+    if request.session.get('user_role') != 'admin':
+        messages.error(request, 'Access Denied: Only admins can process book returns.')
+        return redirect('/')
+
+    try:
+        # Find the specific checkout record
+        issue = IssuedBook.objects.get(id=issue_id, is_returned=False)
+        
+        # 1. Mark the transaction as returned
+        issue.is_returned = True
+        issue.save()
+        
+        # 2. Add the copy back to available inventory
+        book = issue.book
+        book.available_copies += 1
+        book.save()
+        
+        messages.success(request, f'Successfully processed return for "{book.bname}". Inventory updated.')
+    except IssuedBook.DoesNotExist:
+        messages.error(request, 'This book record was not found or has already been returned.')
+    except Exception as e:
+        messages.error(request, f"SYSTEM ERROR: {str(e)}")
+        
+    # Redirects the admin back to the exact page they clicked the button from
+    return redirect(request.META.get('HTTP_REFERER', '/'))

@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
-from app.views import first_page,create_book,admin_login_view,user_login_view, user_register_view,withdraw_book,logout_view,admin_dashboard
+from app.views import first_page,create_book,admin_login_view,user_login_view,user_register_view,withdraw_book,logout_view,admin_dashboard, return_book
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',first_page),
@@ -29,4 +29,5 @@ urlpatterns = [
     path('withdraw/<int:book_id>/', withdraw_book),
     path('admin-dashboard/', admin_dashboard),
     path('logout/', logout_view),
+    path('return/<int:issue_id>/', return_book),
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

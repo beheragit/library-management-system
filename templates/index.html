@@ -107,6 +107,7 @@
                             <th style="padding: 12px; border: 1px solid #ddd;">Book Name</th>
                             <th style="padding: 12px; border: 1px solid #ddd;">Issue Date</th>
                             <th style="padding: 12px; border: 1px solid #ddd;">Return Deadline</th>
+                            <th style="padding: 12px; border: 1px solid #ddd;">Action</th>
                         </tr>
 
                         {% for issue in active_withdrawals %}
@@ -117,10 +118,13 @@
                                 <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">{{ issue.book.bname }}</td>
                                 <td style="padding: 12px; border: 1px solid #ddd;">{{ issue.issue_date }}</td>
                                 <td style="padding: 12px; border: 1px solid #ddd; color: #dc3545; font-weight: bold;">{{ issue.return_date }}</td>
+                                <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">
+                                            <a href="/return/{{ issue.id }}/" style="background: #28a745; color: white; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 0.85rem;">Mark Returned</a>
+                                </td>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="6" style="padding: 20px; text-align: center; color: #666;">No books are currently withdrawn by any students.</td>
+                                <td colspan="7" style="padding: 20px; text-align: center; color: #666;">No books are currently withdrawn by any students.</td>
                             </tr>
                         {% endfor %}
                     </table>
