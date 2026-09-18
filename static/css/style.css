@@ -78,7 +78,7 @@ body{
     margin: 20px auto;
     background: #ffffff;
     padding: 30px;
-    border: 2px solid #000000; /* Matching your black border theme */
+    border: 2px solid #000000;
 }
 
 .form-header {
@@ -130,7 +130,7 @@ body{
 .form-fields textarea:focus,
 .form-fields select:focus {
     outline: none;
-    border-color: #0066cc; /* Turns blue when clicked */
+    border-color: #0066cc;
 }
 
 .form-fields textarea {
@@ -138,7 +138,7 @@ body{
     min-height: 120px;
 }
 
-/* --- Action Buttons --- */
+
 .form-actions {
     display: flex;
     align-items: center;
@@ -175,7 +175,7 @@ body{
     color: #ff3333;
 }
 
-/* Global style for all form control widgets */
+
 .form-control {
     width: 100%;
     padding: 10px 12px;
@@ -192,7 +192,7 @@ body{
     outline: none;
     border-color: #0066cc;
 }
-/* Ultimate override for the password input field */
+
 .form-fields input[type="password"], 
 .form-control {
     width: 100% !important;

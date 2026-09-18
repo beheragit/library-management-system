@@ -21,10 +21,10 @@ class AdminLoginForm(forms.Form):
 class UserModelForm(forms.ModelForm):
     class Meta:
         model = UserModel
-        # Structural layout order on the web page
+
         fields = ['user_id', 'user_name', 'user_branch', 'user_username', 'user_password']
         
-        # Explicitly change the text labels so they don't look confusing
+
         labels = {
             'user_name': 'Your Full Name',
             'user_username': 'Create Username (Login ID)',

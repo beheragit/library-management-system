@@ -5,12 +5,12 @@ from app.models import AdminModel, UserModel, Book, IssuedBook
 from datetime import datetime, timedelta
 from django.contrib import messages
 
-# 1. Home Page / Book List Viewww
+
 def first_page(request):
     books = Book.objects.all()
     user_role = request.session.get('user_role', None) 
     
-    # Fetch the log list if an admin is looking at the homepage
+
     active_withdrawals = None
     if user_role == 'admin':
         active_withdrawals = IssuedBook.objects.filter(is_returned=False).select_related('user', 'book')
@@ -21,7 +21,7 @@ def first_page(request):
         'active_withdrawals': active_withdrawals
     })
 
-# 2. Handle Book Withdrawal (Fixed & Unified)
+
 def withdraw_book(request, book_id):
     if request.session.get('user_role') != 'user':
         return redirect('/user-login/')
@@ -33,14 +33,14 @@ def withdraw_book(request, book_id):
         book = Book.objects.get(bookid=book_id)
         
         if book.available_copies > 0:
-            # Create transaction tracking log
+
             IssuedBook.objects.create(
                 user=student,
                 book=book,
                 return_date=datetime.now().date() + timedelta(days=14)
             )
             
-            # Deduct copy from inventory
+
             book.available_copies -= 1
             book.save()
             
@@ -53,7 +53,7 @@ def withdraw_book(request, book_id):
         
     return redirect('/')
 
-# 3. New Admin Dashboard Page
+
 def admin_dashboard(request):
     if request.session.get('user_role') != 'admin':
         return render(request, 'index.html', {'msg': 'Access Denied: Admins Only!'})
@@ -64,7 +64,7 @@ def admin_dashboard(request):
         'user_role': 'admin'
     })
 
-# 4. Add Book View (Admin Only)
+
 def create_book(request):
     if request.session.get('user_role') != 'admin':
         return render(request, 'index.html', {'msg': 'Access Denied: Admins Only!'})
@@ -79,7 +79,7 @@ def create_book(request):
         
     return render(request, "booktemp.html", {"form": form})
 
-# 5. Admin Login
+
 def admin_login_view(request):
     form = AdminLoginForm(request.POST or None)
     msg = None
@@ -98,7 +98,7 @@ def admin_login_view(request):
             
     return render(request, 'login.html', {'form': form, 'login_type': 'admin', 'msg': msg})
 
-# 6. User Login
+
 def user_login_view(request):
     form = UserLoginForm(request.POST or None)
     msg = None
@@ -119,7 +119,7 @@ def user_login_view(request):
             
     return render(request, 'login.html', {'form': form, 'login_type': 'user', 'msg': msg})
 
-# 7. User Registration View
+
 def user_register_view(request):
     if request.method == "POST":
         form = UserModelForm(request.POST)
@@ -132,26 +132,25 @@ def user_register_view(request):
         
     return render(request, 'register.html', {'form': form})
 
-# 8. Logout View
 def logout_view(request):
     request.session.flush()  
     return redirect('/')
 
-# 9. Process Book Return (Admin Only)
+
 def return_book(request, issue_id):
     if request.session.get('user_role') != 'admin':
         messages.error(request, 'Access Denied: Only admins can process book returns.')
         return redirect('/')
 
     try:
-        # Find the specific checkout record
+
         issue = IssuedBook.objects.get(id=issue_id, is_returned=False)
         
-        # 1. Mark the transaction as returned
+
         issue.is_returned = True
         issue.save()
         
-        # 2. Add the copy back to available inventory
+
         book = issue.book
         book.available_copies += 1
         book.save()
@@ -162,5 +161,5 @@ def return_book(request, issue_id):
     except Exception as e:
         messages.error(request, f"SYSTEM ERROR: {str(e)}")
         
-    # Redirects the admin back to the exact page they clicked the button from
+
     return redirect(request.META.get('HTTP_REFERER', '/'))
