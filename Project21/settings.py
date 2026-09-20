@@ -78,11 +78,14 @@ WSGI_APPLICATION = 'Project21.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'BookManagementdb',
-        'USER':'root',
-        'PASSWORD':'LN15@behera',
-        'HOST':'localhost',
-        'PORT':'3306',
+        'NAME': os.environ.get('DB_NAME', 'defaultdb'),
+        'USER': os.environ.get('DB_USER', 'avnadmin'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '23490'),
+        'OPTIONS': {
+            'ssl': {'ssl_mode': 'REQUIRED'},
+        },
     }
 }
 
