@@ -14,7 +14,7 @@ class AdminModel(models.Model):
     admin_password = models.CharField(max_length=128)
 
 class UserModel(models.Model):
-    user_id = models.IntegerField(primary_key=True)
+    user_id = models.AutoField(primary_key=True)
     user_name = models.CharField(max_length=30)
     user_branch = models.CharField(max_length=15, null=True, blank=True)
     user_username = models.CharField(max_length=50, unique=True)
